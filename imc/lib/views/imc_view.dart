@@ -5,15 +5,13 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ImcView extends StatefulWidget {
- 
-  const ImcView({super.key });
+  const ImcView({super.key});
 
   @override
   State<ImcView> createState() => _ImcViewState();
 }
 
 class _ImcViewState extends State<ImcView> {
-
   double taille = 0.0;
   double poids = 0.0;
   int age = 0;
@@ -21,45 +19,8 @@ class _ImcViewState extends State<ImcView> {
   double imc = 0.0;
   String resultMessage = '';
 
- Future<void> getFromLocalStorage(String key) async {
-  SharedPreferences localStorage = await SharedPreferences.getInstance();
-  dynamic value;
-
-  setState(() {
-    if (key == "age") {
-      // Pour récupérer un entier
-      value = localStorage.getInt(key);
-      if (value != null) {
-        age = value;
-      }
-    } else if (key == "genre" || key == "resultMessage") {
-      // Pour récupérer une chaîne de caractères
-      value = localStorage.getString(key);
-      if (value != null) {
-        if (key == "genre") {
-          genre = value;
-        } else if (key == "resultMessage") {
-          resultMessage = value;
-        }
-      }
-    } else {
-      // Pour récupérer un double (taille, poids, imc)
-      value = localStorage.getDouble(key);
-      if (value != null) {
-        if (key == "taille") {
-          taille = value;
-        } else if (key == "poids") {
-          poids = value;
-        } else if (key == "imc") {
-          imc = value;
-        }
-      }
-    }
-  });
-}
-
-
-@override
+  
+  @override
   void initState() {
     super.initState();
     // Charger les données lors de l'initialisation
@@ -70,7 +31,47 @@ class _ImcViewState extends State<ImcView> {
     getFromLocalStorage('genre');
     getFromLocalStorage('age');
   }
-   Color regeneredColor() {
+
+// charger les valeur depuis localstorage
+  Future<void> getFromLocalStorage(String key) async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    dynamic value;
+
+    setState(() {
+      if (key == "age") {
+        // Pour récupérer un entier
+        value = localStorage.getInt(key);
+        if (value != null) {
+          age = value;
+        }
+      } else if (key == "genre" || key == "resultMessage") {
+        // Pour récupérer une chaîne de caractères
+        value = localStorage.getString(key);
+        if (value != null) {
+          if (key == "genre") {
+            genre = value;
+          } else if (key == "resultMessage") {
+            resultMessage = value;
+          }
+        }
+      } else {
+        // Pour récupérer un double (taille, poids, imc)
+        value = localStorage.getDouble(key);
+        if (value != null) {
+          if (key == "taille") {
+            taille = value;
+          } else if (key == "poids") {
+            poids = value;
+          } else if (key == "imc") {
+            imc = value;
+          }
+        }
+      }
+    });
+  }
+
+
+  Color regeneredColor() {
     if (age < 18) {
       // Utiliser des percentiles pour les enfants
       return _colorChildImc(imc, age);
@@ -148,6 +149,7 @@ class _ImcViewState extends State<ImcView> {
       return Colors.red;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,15 +160,19 @@ class _ImcViewState extends State<ImcView> {
             floating: true,
             toolbarHeight: 80,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text("Mon IMC",style: GoogleFonts.montserrat(fontWeight:FontWeight.bold,fontSize: MediaQuery.of(context).size.width*0.06),),
+              title: Text(
+                "Mon IMC",
+                style: GoogleFonts.montserrat(
+                    fontWeight: FontWeight.bold,
+                    fontSize: MediaQuery.of(context).size.width * 0.06),
+              ),
             ),
           ),
-         SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Container(
               padding: const EdgeInsets.all(16),
               width: MediaQuery.of(context).size.width,
-              child: _percentCircularIndicator(
-                  context, imc, regeneredColor()),
+              child: _percentCircularIndicator(context, imc, regeneredColor()),
             ),
           ),
           SliverToBoxAdapter(

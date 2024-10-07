@@ -44,7 +44,7 @@ class _MyAppRoutesState extends State<MyAppRoutes> {
           BottomNavigationBarItem(
               icon: Icon(Icons.calculate), label: "Calculer IMC"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.speed_rounded), label: "IMC"),
+              icon: Icon(Icons.speed_rounded), label: "Mon IMC"),
                BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_rounded), label: "Evolution"),
         ],
