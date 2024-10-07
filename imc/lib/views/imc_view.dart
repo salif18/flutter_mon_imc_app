@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,9 @@ class ImcView extends StatefulWidget {
 }
 
 class _ImcViewState extends State<ImcView> {
+  String? version; // Version de l'application (ex: "1.0.0")
+  String? buildNumber; // Numéro de build (ex: "1")
+
   double taille = 0.0;
   double poids = 0.0;
   int age = 0;
@@ -19,10 +23,10 @@ class _ImcViewState extends State<ImcView> {
   double imc = 0.0;
   String resultMessage = '';
 
-  
   @override
   void initState() {
     super.initState();
+    _getAppVersion();
     // Charger les données lors de l'initialisation
     getFromLocalStorage('taille');
     getFromLocalStorage('poids');
@@ -30,6 +34,19 @@ class _ImcViewState extends State<ImcView> {
     getFromLocalStorage('resultMessage');
     getFromLocalStorage('genre');
     getFromLocalStorage('age');
+  }
+
+// obtenir la version de lapplication
+  Future<void> _getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    // String appName = packageInfo.appName;           // Nom de l'application
+    // String packageName = packageInfo.packageName;   // Nom du package
+
+    setState(() {
+      version = packageInfo.version; // Version de l'application (ex: "1.0.0")
+      buildNumber = packageInfo.buildNumber;
+    });
   }
 
 // charger les valeur depuis localstorage
@@ -69,7 +86,6 @@ class _ImcViewState extends State<ImcView> {
       }
     });
   }
-
 
   Color regeneredColor() {
     if (age < 18) {
@@ -153,9 +169,11 @@ class _ImcViewState extends State<ImcView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff0f1f5),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            backgroundColor: Colors.white,
             pinned: true,
             floating: true,
             toolbarHeight: 80,
@@ -374,6 +392,56 @@ class _ImcViewState extends State<ImcView> {
                           )),
                     )
                 ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                height: 100,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        child: Text(
+                      "Devélopper par Salif Moctar Konaté from",
+                      style: GoogleFonts.lato(
+                          color: Colors.grey[400],
+                          fontSize: MediaQuery.of(context).size.width * 0.035),
+                    )),
+                    SizedBox(
+                        child: Text(
+                      "DevSoft",
+                      style: GoogleFonts.lato(
+                          color: Colors.grey[400],
+                          fontSize: MediaQuery.of(context).size.width * 0.035),
+                    )),
+                    SizedBox(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "v${version ?? "inconnue"}",
+                            style: GoogleFonts.lato(
+                                color: Colors.grey[400],
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "+ ${buildNumber ?? "inconnue"}",
+                            style: GoogleFonts.lato(
+                                color: Colors.grey[400],
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.035),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           )

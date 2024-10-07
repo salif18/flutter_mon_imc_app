@@ -18,7 +18,7 @@ class _MyAppRoutesState extends State<MyAppRoutes> {
       body: const [
         ImcCalculatorView(),
         ImcView(),
-        StatsView()
+        // StatsView()
       ][_currentIndex],
       bottomNavigationBar: _bottomTab(),
     );
@@ -45,8 +45,8 @@ class _MyAppRoutesState extends State<MyAppRoutes> {
               icon: Icon(Icons.calculate), label: "Calculer IMC"),
           BottomNavigationBarItem(
               icon: Icon(Icons.speed_rounded), label: "Mon IMC"),
-               BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_rounded), label: "Evolution"),
+              //  BottomNavigationBarItem(
+              // icon: Icon(Icons.bar_chart_rounded), label: "Evolution"),
         ],
       ),
     );

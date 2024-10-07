@@ -12,6 +12,7 @@ class ImcCalculatorView extends StatefulWidget {
 }
 
 class _ImcCalculatorViewState extends State<ImcCalculatorView> {
+
   final _formKey = GlobalKey<FormState>();
   double _height = 0.0;
   double _weight = 0.0;
@@ -19,6 +20,7 @@ class _ImcCalculatorViewState extends State<ImcCalculatorView> {
   String _genre = 'Homme'; // Valeur par défaut
   double _imc = 0.0;
   String _resultMessage = '';
+
 
   //sauvegarder dans localstorage
   Future<void> saveToLocalStorage(String key, value) async {
