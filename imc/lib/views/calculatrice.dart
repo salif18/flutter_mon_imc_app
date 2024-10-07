@@ -97,7 +97,7 @@ class _ImcCalculatorViewState extends State<ImcCalculatorView> {
 
   // interpretaion pour enfant en fonction de l'âge
   String _interpretChildImc(double imc, int age) {
-    if (age >= 2 && age <= 5) {
+    if (age >= 0 && age <= 5) {
       return _interpretImcForAge(imc, 14, 17);
     } else if (age > 5 && age <= 10) {
       return _interpretImcForAge(imc, 14.5, 19.5);
@@ -193,7 +193,7 @@ class _ImcCalculatorViewState extends State<ImcCalculatorView> {
   }
 
   Color _colorChildImc(double imc, int age) {
-    if (age >= 2 && age <= 5) {
+    if (age >= 0 && age <= 5) {
       return _colorImcForAge(imc, 14, 17);
     } else if (age > 5 && age <= 10) {
       return _colorImcForAge(imc, 14.5, 19.5);
