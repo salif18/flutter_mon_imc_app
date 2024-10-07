@@ -399,25 +399,37 @@ class _ImcViewState extends State<ImcView> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: SizedBox(
-                height: 100,
+                height: 150,
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                         child: Text(
-                      "Devélopper par Salif Moctar Konaté from",
+                      "Devélopper par Salif Moctar Konaté",
                       style: GoogleFonts.lato(
                           color: Colors.grey[400],
                           fontSize: MediaQuery.of(context).size.width * 0.035),
                     )),
                     SizedBox(
                         child: Text(
-                      "DevSoft",
+                      "from",
                       style: GoogleFonts.lato(
                           color: Colors.grey[400],
                           fontSize: MediaQuery.of(context).size.width * 0.035),
                     )),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: const DecorationImage(
+                                image: AssetImage("assets/images/devsoft.jpg"),
+                                fit: BoxFit.contain)),
+                      ),
+                    ),
                     SizedBox(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
