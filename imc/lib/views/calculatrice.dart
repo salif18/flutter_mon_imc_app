@@ -459,63 +459,71 @@ class _ImcCalculatorViewState extends State<ImcCalculatorView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20.0),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Genre",
-                    style: GoogleFonts.montserrat(
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.width * 0.05,
+              const SizedBox(height: 40.0),
+              Container(
+                padding: const EdgeInsets.all(8),
+                width: 400,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Genre",
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.bold,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                  Column(
-                    children: [
-                      SizedBox(
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.man_outlined,
-                              color: Colors.blue,
-                              size: MediaQuery.of(context).size.width * 0.1,
-                            ),
-                            Radio<String>(
-                              value: 'Homme',
-                              groupValue: _genre,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _genre = value!;
-                                });
-                              },
-                            ),
-                          ],
+                    const SizedBox(width: 20),
+                    Column(
+                      children: [
+                        SizedBox(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.man_outlined,
+                                color: Colors.blue,
+                                size: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                              Radio<String>(
+                                value: 'Homme',
+                                groupValue: _genre,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _genre = value!;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.woman,
-                              color: const Color.fromARGB(255, 243, 33, 149),
-                              size: MediaQuery.of(context).size.width * 0.1,
-                            ),
-                            Radio<String>(
-                              value: 'Femme',
-                              groupValue: _genre,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _genre = value!;
-                                });
-                              },
-                            ),
-                          ],
+                        SizedBox(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.woman,
+                                color: const Color.fromARGB(255, 243, 33, 149),
+                                size: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                              Radio<String>(
+                                value: 'Femme',
+                                groupValue: _genre,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _genre = value!;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

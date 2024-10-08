@@ -13,81 +13,57 @@ class ImcView extends StatefulWidget {
 }
 
 class _ImcViewState extends State<ImcView> {
-  String? version; // Version de l'application (ex: "1.0.0")
-  String? buildNumber; // Numéro de build (ex: "1")
+  String? version;
+  String? buildNumber;
 
   double taille = 0.0;
   double poids = 0.0;
   int age = 0;
-  String genre = 'Homme'; // Valeur par défaut
+  String genre = 'Homme';
   double imc = 0.0;
   String resultMessage = '';
+
+  bool isDataLoaded = false; // Ajoutez cette variable
 
   @override
   void initState() {
     super.initState();
-    _getAppVersion();
-    // Charger les données lors de l'initialisation
-    getFromLocalStorage('taille');
-    getFromLocalStorage('poids');
-    getFromLocalStorage('imc');
-    getFromLocalStorage('resultMessage');
-    getFromLocalStorage('genre');
-    getFromLocalStorage('age');
+    _initializeAppData();
   }
 
-// obtenir la version de lapplication
+  Future<void> _initializeAppData() async {
+    await _getAppVersion();
+    await _loadUserData();
+    setState(() {
+      isDataLoaded = true; // Les données sont prêtes
+    });
+  }
+
   Future<void> _getAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-    // String appName = packageInfo.appName;           // Nom de l'application
-    // String packageName = packageInfo.packageName;   // Nom du package
-
     setState(() {
-      version = packageInfo.version; // Version de l'application (ex: "1.0.0")
+      version = packageInfo.version;
       buildNumber = packageInfo.buildNumber;
     });
   }
 
-// charger les valeur depuis localstorage
-  Future<void> getFromLocalStorage(String key) async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    dynamic value;
-
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      if (key == "age") {
-        // Pour récupérer un entier
-        value = localStorage.getInt(key);
-        if (value != null) {
-          age = value;
-        }
-      } else if (key == "genre" || key == "resultMessage") {
-        // Pour récupérer une chaîne de caractères
-        value = localStorage.getString(key);
-        if (value != null) {
-          if (key == "genre") {
-            genre = value;
-          } else if (key == "resultMessage") {
-            resultMessage = value;
-          }
-        }
-      } else {
-        // Pour récupérer un double (taille, poids, imc)
-        value = localStorage.getDouble(key);
-        if (value != null) {
-          if (key == "taille") {
-            taille = value;
-          } else if (key == "poids") {
-            poids = value;
-          } else if (key == "imc") {
-            imc = value;
-          }
-        }
-      }
+      taille = prefs.getDouble('taille') ?? 0.0;
+      poids = prefs.getDouble('poids') ?? 0.0;
+      imc = prefs.getDouble('imc') ?? 0.0;
+      resultMessage = prefs.getString('resultMessage') ?? '';
+      genre = prefs.getString('genre') ?? 'Homme';
+      age = prefs.getInt('age') ?? 0;
     });
   }
 
   Color regeneredColor() {
+    if (!isDataLoaded) {
+      return Colors
+          .grey; // Afficher une couleur neutre tant que les données ne sont pas prêtes
+    }
     if (age < 18) {
       // Utiliser des percentiles pour les enfants
       return _colorChildImc(imc, age);
@@ -104,7 +80,7 @@ class _ImcViewState extends State<ImcView> {
   }
 
   Color _colorChildImc(double imc, int age) {
-    if (age >= 2 && age <= 5) {
+    if (age >= 0 && age <= 5) {
       return _colorImcForAge(imc, 14, 17);
     } else if (age > 5 && age <= 10) {
       return _colorImcForAge(imc, 14.5, 19.5);
@@ -178,19 +154,45 @@ class _ImcViewState extends State<ImcView> {
             floating: true,
             toolbarHeight: 80,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                "Mon IMC",
-                style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width * 0.06),
+              centerTitle: true,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Mon IMC",
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.bold,
+                        fontSize: MediaQuery.of(context).size.width * 0.06),
+                  ),const SizedBox(width: 5),
+                   Icon(
+            LineIcons.heartbeat,
+            color: Colors.red,
+            size: MediaQuery.of(context).size.width * 0.09,
+          ),
+                ],
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8),
               width: MediaQuery.of(context).size.width,
-              child: _percentCircularIndicator(context, imc, regeneredColor()),
+              child: CircularPercentIndicator(
+                animation: true,
+                animationDuration: 270,
+                radius: 80,
+                lineWidth: 30,
+                percent: imc / 100,
+                progressColor: regeneredColor(),
+                backgroundColor: const Color.fromARGB(64, 64, 83, 255),
+                circularStrokeCap: CircularStrokeCap.round,
+                center: Text(
+                  "Santé",
+                  style: GoogleFonts.roboto(
+                      fontSize: MediaQuery.of(context).size.width * 0.06,
+                      color: regeneredColor()),
+                ),
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -218,44 +220,15 @@ class _ImcViewState extends State<ImcView> {
                   Padding(
                     padding: const EdgeInsets.all(0),
                     child: Container(
-                        padding: const EdgeInsets.all(20),
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("$poids kg |",
-                                style: GoogleFonts.lato(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    color:
-                                        const Color.fromARGB(255, 97, 97, 97))),
-                            const SizedBox(width: 5),
-                            Text("$taille m |",
-                                style: GoogleFonts.lato(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    color:
-                                        const Color.fromARGB(255, 85, 85, 85))),
-                            const SizedBox(width: 5),
-                            Text("$genre | ",
-                                style: GoogleFonts.lato(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    color: const Color.fromARGB(
-                                        255, 105, 105, 105))),
-                            const SizedBox(width: 5),
-                            Text("$age ans",
-                                style: GoogleFonts.lato(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    color: const Color.fromARGB(
-                                        255, 104, 104, 104))),
-                          ],
-                        )),
+                      padding: const EdgeInsets.all(20),
+                      width: MediaQuery.of(context).size.width,
+                      alignment: Alignment.center,
+                      child: Text("$poids kg | $taille m | $genre | $age ans",
+                          style: GoogleFonts.lato(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.05,
+                              color: const Color.fromARGB(255, 97, 97, 97))),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -461,26 +434,4 @@ class _ImcViewState extends State<ImcView> {
       ),
     );
   }
-}
-
-Widget _percentCircularIndicator(BuildContext context, imc, regeneratedColor) {
-  return Padding(
-    padding: const EdgeInsets.all(16),
-    child: CircularPercentIndicator(
-      animation: true,
-      animationDuration: 270,
-      radius: 80,
-      lineWidth: 30,
-      percent: imc / 100,
-      progressColor: regeneratedColor,
-      backgroundColor: const Color.fromARGB(64, 64, 83, 255),
-      circularStrokeCap: CircularStrokeCap.round,
-      center: Text(
-        "Santé",
-        style: GoogleFonts.roboto(
-            fontSize: MediaQuery.of(context).size.width * 0.06,
-            color: regeneratedColor),
-      ),
-    ),
-  );
 }
